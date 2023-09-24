@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:to_do/Models/UserModel.dart';
 
 import '../Models/ShowBootmSeetAppTask.dart';
 import '../Screen/TasksScreen.dart';
@@ -23,18 +24,20 @@ class _Home_LayOutState extends State<Home_LayOut> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel? args =ModalRoute.of(context)?.settings.arguments as UserModel;
+
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
-          leading: Center(
-            child: Text(
-              "To Do List",
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-
+          title: Text(
+            "To Do List${
+            args.name
+            }",
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
+
           ),
           leadingWidth: 150,
 

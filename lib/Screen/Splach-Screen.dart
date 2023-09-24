@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:to_do/Layout/HomeLayOut.dart';
+import 'package:to_do/Screen/loginScreen.dart';
 
 import '../ٍshared/Style/color.dart';
 
@@ -10,10 +11,10 @@ static const String routeName="Splach_Scrren";
   @override
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 4), () {
-      Navigator.of(context).pushNamed(Home_LayOut.routeName);
+      Navigator.of(context).pushNamed(LoginSreen.routeName);
     });
     return Container(
-      color: SplachColor,
+      color: Theme.of(context).backgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

@@ -4,9 +4,13 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:to_do/%D9%8Dshared/Style/color.dart';
 
-class AddTaskSreen extends StatelessWidget {
-  const AddTaskSreen({Key? key}) : super(key: key);
+import 'package:to_do/Screen/widget/UpadteTasks.dart';
+import 'package:to_do/fireBase/FireBAseFuncation.dart';
+import 'package:to_do/modual/TaskMoeal.dart';
 
+class AddTaskSreen extends StatelessWidget {
+ TaskModel taskModel ;
+ AddTaskSreen(this.taskModel);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,7 +28,9 @@ class AddTaskSreen extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   bottomLeft: Radius.circular(12),
                 ),
-                onPressed: (context) {},
+                onPressed: (context) {
+                  FireBaseFuncation.DeleteTasks(taskModel.id);
+                },
                 backgroundColor: Color(0xFFFE4A49),
                 foregroundColor: Colors.white,
                 icon: Icons.delete,
@@ -32,9 +38,8 @@ class AddTaskSreen extends StatelessWidget {
               ),
               SlidableAction(
                 autoClose: true,
-
-
                 onPressed: (context) {
+                  Navigator.of(context).pushNamed(UpadteTasksScreen.routeName);
 
                 },
                 backgroundColor: primaryColor,
@@ -47,6 +52,9 @@ class AddTaskSreen extends StatelessWidget {
         ),
 
         child: Card(
+          margin: EdgeInsets.only(
+            top: 10,
+          ),
 
          shape: RoundedRectangleBorder(
            borderRadius: BorderRadius.circular(12)
@@ -63,7 +71,11 @@ class AddTaskSreen extends StatelessWidget {
             child: Row(
               children: [
 
-                VerticalDivider(
+                taskModel.States ? VerticalDivider(
+                  thickness: 3,
+                  width: 3,
+                  color: GreenColor,
+                ):VerticalDivider(
                   thickness: 3,
                   width: 3,
                   color: primaryColor,
@@ -73,8 +85,12 @@ class AddTaskSreen extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      "TitleTask",
-                      style: GoogleFonts.poppins(
+                      taskModel.title,
+                      style: taskModel.States? GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: GreenColor,
+                      ):GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: primaryColor,
@@ -82,28 +98,42 @@ class AddTaskSreen extends StatelessWidget {
                     ),
 
                     Text(
-                      "Desciption",
+                      taskModel.Description,
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: CupertinoColors.black,
+                        color: Colors.grey[600],
                       ),
                     ),
                   ],
                 ),
                 Spacer(),
-                Container(
-                
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    
-                  ),
-                  child: Icon(
-                    Icons.done,
-                    color: Colors.white,
-                    size: 35,
+                taskModel.States ?
+                Text("Done!",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: GreenColor,
+                ),)
+                    :
+                InkWell(
+                  onTap: (){
+                    taskModel.States=true;
+                    FireBaseFuncation.updateTasks(taskModel.id, taskModel);
+                  },
+                  child: Container(
+                  
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      
+                    ),
+                    child: Icon(
+                      Icons.done,
+                      color: Colors.white,
+                      size: 35,
+                    ),
                   ),
                 ),
 

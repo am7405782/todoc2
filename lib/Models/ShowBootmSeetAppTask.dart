@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:to_do/fireBase/FireBAseFuncation.dart';
+import 'package:to_do/modual/TaskMoeal.dart';
+import 'package:to_do/theamMode.dart';
 
 class ShowBootmSeetAppTask extends StatefulWidget {
   const ShowBootmSeetAppTask({Key? key}) : super(key: key);
@@ -9,9 +12,13 @@ class ShowBootmSeetAppTask extends StatefulWidget {
 }
 
 class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
-  TextEditingController time= TextEditingController();
-  TextEditingController Description= TextEditingController();
+
   var FormKey=GlobalKey<FormState>();
+  var titletasksController=TextEditingController();
+  var DescriptiontasksController=TextEditingController();
+  DateTime selectedDate=DateUtils.dateOnly(DateTime.now());
+  bool states =false;
+
   @override
   Widget build(BuildContext context) {
     Size size=MediaQuery.of(context).size;
@@ -32,17 +39,14 @@ class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
               Text(
                 "App New Task",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color:Color(0xff383838),
-                ),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               SizedBox(
                 height: size.height*0.04,
               ),
               TextFormField(
-                controller: time,
+
+                controller: titletasksController,
                 validator: (value) {
                if (value == null || value.isEmpty) {
                  return "pleas enter TaskTitle ";
@@ -53,6 +57,7 @@ class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
+
                   ),
                   label: Text(
                     "Enter Your Task",
@@ -64,12 +69,13 @@ class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
                 ),
 
 
+
               ),
               SizedBox(
                 height: size.height*0.02,
               ),
               TextFormField(
-                controller: Description,
+                controller: DescriptiontasksController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "pleas enter Description ";
@@ -110,10 +116,10 @@ class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
               ),
               InkWell(
                 onTap: (){
-                  ShowDateDickerTAsk();
+                  ShowDateDickerTAsk(context);
                 },
                 child: Text(
-                  "12/12/2012",
+                  selectedDate.toString().substring(0,10),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18,
@@ -129,7 +135,16 @@ class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
               MaterialButton(
                 onPressed: (){
                   if(FormKey.currentState!.validate()){
-                    print("ddddddddddd");
+                    TaskModel tasks =TaskModel(
+                      date: selectedDate.millisecondsSinceEpoch,
+                      Description:DescriptiontasksController.text ,
+                      States:false ,
+                      title: titletasksController.text,
+
+                    );
+                   FireBaseFuncation.addTaskFirebaseStore(tasks).then((value) {
+                     Navigator.pop(context);
+                   });
                   }
                 },
                 shape: OutlineInputBorder(
@@ -152,12 +167,19 @@ class _ShowBootmSeetAppTaskState extends State<ShowBootmSeetAppTask> {
       ),
     );
   }
-  ShowDateDickerTAsk(){
-    return showDatePicker(
+  void ShowDateDickerTAsk(BuildContext context)async{
+    DateTime? choseDate=await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)),
     );
+    if(choseDate !=null){
+      selectedDate=DateUtils.dateOnly(choseDate);
+      setState(() {
+        
+      });
+    }
+
   }
 }
